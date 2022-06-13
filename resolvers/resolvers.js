@@ -18,6 +18,7 @@ module.exports = {
     updateTodo: async (_, { id, description }) => {
       const todo = await Todo.findByIdAndUpdate(id, { description: description });
       const res = await todo.save();
+      console.log(res);
       return res;
     },
     deleteTodo: async (_, { id }) => {
