@@ -1,8 +1,8 @@
 const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
-const typeDefs = require("./typeDefs");
+const typeDefs = require("./typeDefs/typeDefs");
 const path = require("path");
-const resolvers = require("./resolvers/resolvers");
+const resolvers = require("./resolvers/index");
 require("dotenv/config");
 
 const PORT = process.env.PORT || 2000;
