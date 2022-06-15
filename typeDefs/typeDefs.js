@@ -8,26 +8,19 @@ module.exports = gql`
   }
   type User {
     id: ID!
-    email: String!
-    password: String
+    uid: String!
     todos: [Todo!]
   }
-  # type Auth {
-  #   userId: ID!
-  #   token: String!
-  #   tokenExpiration: Int!
-  # }
+
   type Query {
     todos: [Todo!]!
     users: [User!]!
-    userTodo(email: String!): [Todo!]
-    # user(email: String!, password: String!): User
-    # login(email: String!, password: String!): Auth!
+    userTodo(uid: String!): User
   }
 
   type Mutation {
-    createUser(email: String!, password: String!): User!
-    createTodo(description: String!): Todo!
+    createUser(uid: String!): User!
+    createTodo(description: String!, userId: ID!): Todo!
     updateTodo(id: ID!, description: String!): Todo
     checkedTodo(id: ID!, status: Boolean!): Todo
     deleteTodo(id: ID!): Todo

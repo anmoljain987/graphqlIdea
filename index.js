@@ -11,6 +11,7 @@ const server = new ApolloServer({
   resolvers,
 });
 
+// server.applyMiddleware();
 mongoose
   .connect(process.env.DB_LINK, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

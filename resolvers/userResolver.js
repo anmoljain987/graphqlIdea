@@ -1,20 +1,22 @@
-const bycrypt = require("bcryptjs");
 const User = require("../models/User");
 module.exports = {
   Query: {
-    // login: async (_, { email }) => await User.find({ email }),
+    userTodo: async (_, { uid }) => {
+      const res = await User.findOne({ uid }).populate("todos");
+
+      return res;
+    },
   },
   Mutation: {
-    createUser: async (_, { email, password }) => {
-      const existingUser = await User.findOne({ email });
+    createUser: async (_, { uid }) => {
+      const existingUser = await User.findOne({ uid });
       if (existingUser) {
         throw new Error("User Already Exists");
       }
       try {
-        const hashedPassword = await bycrypt.hash(password, 12);
-        const user = await User.create({ email, password: hashedPassword });
+        const user = await User.create({ uid });
         const res = await user.save();
-        return { ...res._doc, password: null, id: res._id };
+        return { ...res._doc, id: res._id };
       } catch (error) {
         console.log(error.message);
       }
