@@ -5,7 +5,7 @@ const serviceAccount = require("./serviceFirebase.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  // databaseURL: "https://todo-list-anmol.herokuapp.com/",
+  
 });
 
 exports.getUid = async function (idToken) {

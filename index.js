@@ -1,6 +1,6 @@
 const { ApolloServer, AuthenticationError } = require("apollo-server");
 const mongoose = require("mongoose");
-require("./config/firebase-config");
+
 const { getUid } = require("./middlewares/authMiddleware");
 const typeDefs = require("./typeDefs/typeDefs");
 
@@ -13,6 +13,7 @@ const server = new ApolloServer({
   resolvers,
   context: async ({ req }) => {
     let user = await getUid(req?.headers?.authorization);
+    console.log(user);
     if (!user) {
       throw new AuthenticationError("Unauthourised Access");
     }
