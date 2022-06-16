@@ -1,7 +1,9 @@
-const { ApolloServer } = require("apollo-server");
+const { ApolloServer, AuthenticationError } = require("apollo-server");
 const mongoose = require("mongoose");
+require("./config/firebase-config");
+const { getUid } = require("./middlewares/authMiddleware");
 const typeDefs = require("./typeDefs/typeDefs");
-const path = require("path");
+
 const resolvers = require("./resolvers/index");
 require("dotenv/config");
 
@@ -9,6 +11,17 @@ const PORT = process.env.PORT || 2000;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: async ({ req }) => {
+    let user = await getUid(req?.headers?.authorization);
+    if (!user) {
+      throw new AuthenticationError("Unauthourised Access");
+    }
+    return {
+      uid: user.uid,
+      email: user.email,
+    };
+    // console.log({ user });
+  },
 });
 
 // server.applyMiddleware();

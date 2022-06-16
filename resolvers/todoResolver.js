@@ -2,22 +2,23 @@ const Todo = require("../models/Todo");
 const User = require("../models/User");
 module.exports = {
   Query: {
-    todos: async () => {
-      const todos = await Todo.find().populate("userId");
-
+    todos: async (_, __, { uid }) => {
+      const user = await User.findOne({ uid });
+      const todos = await Todo.find({ uid: user.id });
+      // console.log(todos);
       return todos;
     },
   },
   Mutation: {
-    createTodo: async (_, { description, userId }) => {
-      const user = await User.findById(userId);
+    createTodo: async (_, { description }, { uid }) => {
+      const user = await User.findOne({ uid });
       if (!user) {
         throw new Error("User not Found");
       }
       const todo = await Todo.create({
         description,
         status: false,
-        userId,
+        user,
       });
       const res = await todo.save();
 
@@ -38,6 +39,12 @@ module.exports = {
     },
     deleteTodo: async (_, { id }) => {
       return await Todo.findByIdAndDelete(id);
+    },
+  },
+  Todo: {
+    user: async (todo, __, ___) => {
+      const res = await Todo.findOne({ id: todo.id }).populate("user");
+      return res.user;
     },
   },
 };

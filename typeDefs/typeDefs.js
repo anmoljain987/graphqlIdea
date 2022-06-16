@@ -4,7 +4,7 @@ module.exports = gql`
     id: ID!
     description: String!
     status: Boolean!
-    userId: User!
+    user: User!
   }
   type User {
     id: ID!
@@ -15,12 +15,12 @@ module.exports = gql`
   type Query {
     todos: [Todo!]!
     users: [User!]!
-    userTodo(uid: String!): User
+    userTodo: User
   }
 
   type Mutation {
-    createUser(uid: String!): User!
-    createTodo(description: String!, userId: ID!): Todo!
+    createUser: User!
+    createTodo(description: String!): Todo!
     updateTodo(id: ID!, description: String!): Todo
     checkedTodo(id: ID!, status: Boolean!): Todo
     deleteTodo(id: ID!): Todo
