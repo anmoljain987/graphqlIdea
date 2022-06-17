@@ -7,7 +7,6 @@ const rootResolver = {
     ...todoResolver.Query,
   },
   Mutation: {
-    ...userResolver.Mutation,
     ...todoResolver.Mutation,
   },
   User: {

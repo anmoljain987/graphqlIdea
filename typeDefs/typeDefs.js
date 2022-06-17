@@ -9,6 +9,7 @@ module.exports = gql`
   type User {
     id: ID!
     uid: String!
+    email: String!
     todos: [Todo!]
   }
 
@@ -19,7 +20,6 @@ module.exports = gql`
   }
 
   type Mutation {
-    createUser: User!
     createTodo(description: String!): Todo!
     updateTodo(id: ID!, description: String!): Todo
     checkedTodo(id: ID!, status: Boolean!): Todo

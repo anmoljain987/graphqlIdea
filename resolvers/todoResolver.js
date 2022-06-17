@@ -24,7 +24,7 @@ module.exports = {
 
       await user.todos.push(res);
       await user.save();
-      return res.populate("userId");
+      return res.populate("user");
     },
     checkedTodo: async (_, { id, status }) => {
       const todo = await Todo.findByIdAndUpdate(id, { status: status });

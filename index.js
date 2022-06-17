@@ -5,6 +5,8 @@ const { getUid } = require("./middlewares/authMiddleware");
 const typeDefs = require("./typeDefs/typeDefs");
 
 const resolvers = require("./resolvers/index");
+const { User } = require("./resolvers/userResolver");
+const UserModel = require("./models/User");
 require("dotenv/config");
 
 const PORT = process.env.PORT || 2000;
@@ -12,20 +14,26 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    let user = await getUid(req?.headers?.authorization);
-    console.log(user);
-    if (!user) {
-      throw new AuthenticationError("Unauthourised Access");
+    try {
+      let user = await getUid(req?.headers?.authorization);
+
+      if (!user) {
+        throw new AuthenticationError("Unauthourised Access");
+      }
+      let _user = await UserModel.findOne({ uid: user.uid });
+      if (!_user) {
+        let _user = await UserModel.create({ uid: user.uid, email: user.email });
+      }
+      return {
+        uid: user.uid,
+        email: user.email,
+      };
+    } catch (error) {
+      console.log({ error });
     }
-    return {
-      uid: user.uid,
-      email: user.email,
-    };
-    // console.log({ user });
   },
 });
 
-// server.applyMiddleware();
 mongoose
   .connect(process.env.DB_LINK, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {

@@ -5,7 +5,6 @@ const serviceAccount = require("./serviceFirebase.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  
 });
 
 exports.getUid = async function (idToken) {
@@ -14,6 +13,6 @@ exports.getUid = async function (idToken) {
 
     return res;
   } catch (error) {
-    console.log(error.message);
+    console.log("errorAdmin", error.message);
   }
 };
