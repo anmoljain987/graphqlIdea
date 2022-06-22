@@ -1,8 +1,10 @@
 const Todo = require("../models/Todo");
 const User = require("../models/User");
+
 module.exports = {
   Query: {
     todos: async (_, __, { uid }) => {
+      console.log({ uid });
       const user = await User.findOne({ uid });
       const todos = await Todo.find({ uid: user.id });
       // console.log(todos);
@@ -38,7 +40,16 @@ module.exports = {
       return res;
     },
     deleteTodo: async (_, { id }) => {
-      return await Todo.findByIdAndDelete(id);
+      const todo = await Todo.findById({ id });
+      const userDelete = await User.findOneAndUpdate(
+        { uid: todo.uid },
+        { $pull: { todos: todo._id } }
+      );
+      userDelete.save();
+
+      const res = await Todo.deleteOne(todo);
+
+      return res;
     },
   },
   Todo: {

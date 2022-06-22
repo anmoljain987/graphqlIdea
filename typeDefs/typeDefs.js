@@ -6,7 +6,7 @@ module.exports = gql`
     status: Boolean!
     user: User!
   }
-  type User {
+  type User @key(fields: "uid") {
     id: ID!
     uid: String!
     email: String!
@@ -14,7 +14,7 @@ module.exports = gql`
   }
 
   type Query {
-    todos: [Todo!]!
+    todos: [Todo!]
     users: [User!]!
     userTodo: User
   }

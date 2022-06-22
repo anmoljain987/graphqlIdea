@@ -15,5 +15,9 @@ module.exports = {
       const res = await Todo.find({ user: user._id });
       return res;
     },
+    async __resolveReference({ uid }) {
+      const res = await User.findOne({ uid });
+      return res;
+    },
   },
 };

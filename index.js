@@ -1,39 +1,32 @@
-const { ApolloServer, AuthenticationError } = require("apollo-server");
+const { ApolloServer } = require("apollo-server");
 const mongoose = require("mongoose");
-
-const { getUid } = require("./middlewares/authMiddleware");
 const typeDefs = require("./typeDefs/typeDefs");
-
+const { ApolloServerPluginInlineTraceDisabled } = require("apollo-server-core");
 const resolvers = require("./resolvers/index");
-const { User } = require("./resolvers/userResolver");
+const { buildSubgraphSchema } = require("@apollo/federation");
 const UserModel = require("./models/User");
 require("dotenv/config");
 
 const PORT = process.env.PORT || 2000;
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
+  plugins: [ApolloServerPluginInlineTraceDisabled()],
+
   context: async ({ req }) => {
     try {
-      let user = await getUid(req?.headers?.authorization);
-
-      if (!user) {
-        throw new AuthenticationError("Unauthourised Access");
-      }
-      let _user = await UserModel.findOne({ uid: user.uid });
+      let uid = req?.headers["x-uid"];
+      let email = req?.headers["x-email"];
+      let _user = await UserModel.findOne({ uid });
       if (!_user) {
-        let _user = await UserModel.create({ uid: user.uid, email: user.email });
+        UserModel.create({ uid, email });
       }
       return {
-        uid: user.uid,
-        email: user.email,
+        uid,
+        email,
       };
     } catch (error) {
-      console.log({ error });
+      console.log("\x1b[31m", error.message);
     }
-  },
-  cors: {
-    origin: ["https://todolist-graphql.vercel.app", "http://localhost:3000"],
   },
 });
 
