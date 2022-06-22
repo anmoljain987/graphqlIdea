@@ -7,7 +7,6 @@ module.exports = {
       console.log({ uid });
       const user = await User.findOne({ uid });
       const todos = await Todo.find({ uid: user.id });
-      // console.log(todos);
       return todos;
     },
   },
@@ -40,14 +39,17 @@ module.exports = {
       return res;
     },
     deleteTodo: async (_, { id }) => {
-      const todo = await Todo.findById({ id });
-      const userDelete = await User.findOneAndUpdate(
-        { uid: todo.uid },
-        { $pull: { todos: todo._id } }
-      );
-      userDelete.save();
+      const todo = await Todo.findById(id);
 
-      const res = await Todo.deleteOne(todo);
+      const userDelete = await User.findOneAndUpdate(
+        { _id: todo.user },
+        { $pull: { todos: todo._id } },
+        {
+          new: true,
+        }
+      );
+
+      const res = await Todo.findByIdAndDelete(todo);
 
       return res;
     },
