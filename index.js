@@ -28,7 +28,7 @@ const server = new ApolloServer({
       console.log("\x1b[31m", error.message);
     }
   },
-  cors: ["https://federationgateway.herokuapp.com"],
+  // cors: ["https://federationgateway.herokuapp.com"],
 });
 
 mongoose
